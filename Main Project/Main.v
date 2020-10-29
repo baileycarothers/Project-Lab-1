@@ -31,6 +31,8 @@ module Main(
     input JA0, JA1, JA2, JA3,
     //IPS LEDs
     output LED0, LED1, LED2, LED3,
+    //Motor control
+    output JA4, JA5, JA6, JA7, JC0, JC4,
     //Motor LEDs
     output LED12, LED13, LED14, LED15
 );
@@ -76,10 +78,10 @@ assign JC0 = MotorSides[1];
 assign JC4 = MotorSides[0];
 
 reg [3:0] MotorPolarity = 4'b0000;
-assign JC6 = MotorPolarity[0]; //Right side forward
-assign JC5 = MotorPolarity[1]; //Right side backward
-assign JC1 = MotorPolarity[2]; //Left side forward
-assign JC2 = MotorPolarity[3]; //Left side backward
+assign JA4 = MotorPolarity[0]; //Right side forward
+assign JA5 = MotorPolarity[1]; //Right side backward
+assign JA6 = MotorPolarity[2]; //Left side forward
+assign JA7 = MotorPolarity[3]; //Left side backward
 
 //Motor direction testing
 assign LED15 = MotorPolarity[2];
