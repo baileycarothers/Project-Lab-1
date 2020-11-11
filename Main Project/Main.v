@@ -40,7 +40,10 @@ module Main(
     //Motor control
     output JC0, JC1, JC2, JC3, JC4, JC5,
     //Motor LEDs
-    output LED12, LED13, LED14, LED15
+    output LED12, LED13, LED14, LED15,
+    //Distance Sensors
+    input JA7,
+    output LED7
 );
     
 //LEDs turn on when corresponding IPS detects metal
@@ -49,17 +52,21 @@ assign LED1 = ~JA1;
 assign LED2 = ~JA2;
 assign LED3 = ~JA3;
 
+assign LED7 = JA7;
+
 //Electromagnet testing
 assign SW0 = JA6;
 
 //Declare variables
 reg motorStop;
 reg currentProtection;
+reg distanceSensor;
 
 //Initialize variables
 initial begin
     motorStop = 0;
     currentProtection = 0;
+    distanceSensor = 0;
 end
 
 //Set up clock to control speed
@@ -70,6 +77,14 @@ always @ (posedge clock)
             speedControl <= speedControl + 1;
         else
             speedControl <= 0;
+    end
+
+always @ (posedge clock)
+    begin
+        if(JA7)
+            distanceSensor <= 1;
+        else
+            distanceSensor <= 0;
     end
 
 //Two possible speeds using wires
@@ -107,8 +122,13 @@ assign LED14 = MotorPolarity[3];
 assign LED13 = MotorPolarity[0];
 assign LED12 = MotorPolarity[1];
 
+//Comparator control code
+//Import from mini project
+
+//Distance sensor control
+
 always @ (*)
-    if(currentProtection==0)begin
+    if(currentProtection==0 && distanceSensor==0)begin
         case(IPSInput)
             4'b0000: 
                 begin
@@ -255,6 +275,10 @@ always @ (*)
                     MotorPolarity[3] = 0;
                 end  
         endcase
+    end
+    else begin
+        MotorSides[1] = motorStop;
+        MotorSides[0] = motorStop;
     end
                 
 endmodule
